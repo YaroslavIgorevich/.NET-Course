@@ -10,7 +10,9 @@ namespace CourseApp
     {
         public void Build(int rows)
         {
-            var baseSize = 1 + (rows - 1) * 2;            
+            var firstMember = 1;
+            var step = 2;
+            var baseSize = firstMember + (rows - 1) * step;            
             int r, l; 
             r = l = baseSize / 2;
             BuildRow(r, l, baseSize);            

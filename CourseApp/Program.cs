@@ -10,11 +10,11 @@ namespace CourseApp
     {
         static void Main(string[] args)
         {
-            PyramidBuilder builder = new PyramidBuilder();
-            builder.build(25);
+            var builder = new PyramidBuilder();
+            builder.Build(25);
 
-            FibonacciGenerator fibGenerator = new FibonacciGenerator();
-            fibGenerator.generate();
+            var fibGenerator = new FibonacciGenerator();
+            fibGenerator.Generate();
         }
     }
 }

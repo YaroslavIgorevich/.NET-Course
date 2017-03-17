@@ -8,14 +8,14 @@ namespace CourseApp
 {
     class FibonacciGenerator
     {   
-        public void generate()
+        public void Generate()
         {
-            bool valid = true;
-            int number = 1;
+            var valid = true;
+            var number = 1;
 
             do {
                 Console.WriteLine("Please, enter a number:");
-                string userInput = Console.ReadLine();                
+                var userInput = Console.ReadLine();                
 
                 try
                 {
@@ -31,31 +31,30 @@ namespace CourseApp
 
             Console.WriteLine("Recursively: ");
             Console.Write(1 + " ");
-            generateRecursively(number, true);
+            GenerateRecursively(number, true);
 
             Console.Write(Environment.NewLine);
 
             Console.WriteLine("Iteratively: ");
-            generateIteratively(number);
+            GenerateIteratively(number);
         }
 
-        public int generateRecursively(int number, bool print)
+        public int GenerateRecursively(int number, bool print)
         {
-            int currentElement = (number == 1 || number == 2) ? 1 : generateRecursively(number - 1, print) + generateRecursively(number - 2, false);
+            int currentElement = (number == 1 || number == 2) ? 1 : GenerateRecursively(number - 1, print) + GenerateRecursively(number - 2, false);
 
-            if (print)
-                Console.Write(currentElement + " ");
+            if (print) { Console.Write(currentElement + " "); }
 
             return currentElement;            
         }
 
-        public void generateIteratively(int number)
+        public void GenerateIteratively(int number)
         {
-            int prev = 1;
-            int prevPrev = 1;
-            int current = 1;
+            var prev = 1;
+            var prevPrev = 1;
+            var current = 1;
 
-            for (int i = 0; i < number; i++)
+            for (var i = 0; i < number; i++)
             {
                 if (i > 1)
                 {

@@ -8,17 +8,17 @@ namespace CourseApp
 {
     class PyramidBuilder
     {
-        public void build(int rows)
+        public void Build(int rows)
         {
-            int baseSize = 1 + (rows - 1) * 2;            
+            var baseSize = 1 + (rows - 1) * 2;            
             int r, l; 
             r = l = baseSize / 2;
-            buildRow(r, l, baseSize);            
+            BuildRow(r, l, baseSize);            
         }
 
-        private void buildRow(int r, int l, int baseSize)
+        private void BuildRow(int r, int l, int baseSize)
         {
-            for (int i = 0; i < baseSize; i++)
+            for (var i = 0; i < baseSize; i++)
             {
                 if (i >= l && i <= r)
                 {
@@ -35,7 +35,7 @@ namespace CourseApp
             l--;
 
             if (r - l < baseSize)
-                buildRow(r, l, baseSize);
+                BuildRow(r, l, baseSize);
         }
     }
 }

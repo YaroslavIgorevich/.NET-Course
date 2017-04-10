@@ -8,35 +8,34 @@ namespace CourseApp
 {
     class Temperature
     {
-        private double value;
-        private bool isCelsius;
+        private double _value;
+        private bool _isCelsius;
 
         double Value
         {
-            get { return value; }
+            get { return _value; }
 
-            set { this.value = value; }
+            set { _value = value; }
         }
 
         bool IsCelsius
         {
-            get { return isCelsius; }
+            get { return _isCelsius; }
 
-            set { this.isCelsius = value; }
+            set { _isCelsius = value; }
         }            
 
         public Temperature(double value, bool isCelcius = true)
         {
-            this.value = value;
-            this.isCelsius = isCelcius;
+            _value = value;
+            _isCelsius = isCelcius;
         }
 
         public static Temperature ConvertToF(Temperature temp)
         {
-            if (temp.isCelsius)
+            if (temp._isCelsius)
             {
-                temp.Value = temp.Value * 9 / 5 + 32;
-                temp.IsCelsius = false;
+                return new Temperature(temp.Value * 9 / 5 + 32, false);                
             }            
 
             return temp;
@@ -44,31 +43,48 @@ namespace CourseApp
 
         public static Temperature ConvertToC(Temperature temp)
         {
-            if (!temp.isCelsius)
+            if (!temp._isCelsius)
             {
-                temp.Value = (temp.Value - 32) * 5 / 9;
-                temp.IsCelsius = true;
+                return new Temperature((temp.Value - 32) * 5 / 9, true);                
             }           
 
             return temp;
         }
 
-        public static void CoerceToCommonScale (Temperature t1, Temperature t2)
+        private Temperature CoerceTo(Temperature other)
         {
-            if (t1.IsCelsius ^ t2.IsCelsius)
+            if (_isCelsius ^ other.IsCelsius)
             {
-                t2 = t1.isCelsius ? ConvertToC(t2) : ConvertToF(t2);
+                return other._isCelsius ? ConvertToC(this) : ConvertToF(this);
             }
+
+            return this;
         }
 
-        public static Temperature GetAverage(Temperature[] temps)
+        public static Temperature GetAverage(Temperature[] temps, string scale)
         {
             double sum = 0;
 
-            foreach (var temp in temps)
+            switch (scale)
             {
-                sum += ConvertToC(temp).Value;                    
-            }
+                case "C":
+                    foreach (var temp in temps)
+                    {
+                        sum += ConvertToC(temp).Value;
+                    }
+                    break;
+
+                case "F":
+                    foreach (var temp in temps)
+                    {
+                        sum += ConvertToF(temp).Value;
+                    }
+                    break;
+
+                default:
+                    Console.WriteLine("Invalid input");
+                    break;
+            }            
 
             return new Temperature(sum / temps.Length);
         }
@@ -86,26 +102,26 @@ namespace CourseApp
                 return false;
             }
 
-            CoerceToCommonScale(this, otherTemp);
+            var otherTempCoerced = otherTemp.CoerceTo(this);
 
-            return (otherTemp.Value == this.value);
+            return (otherTempCoerced.Value == _value);
         }
 
         public override int GetHashCode()
         {
-            return 31 * value.GetHashCode() + isCelsius.GetHashCode();
+            return 31 * _value.GetHashCode() + _isCelsius.GetHashCode();
         }
 
         public override string ToString()
         {
-            return $"{value} {(isCelsius ? "C" : "F")}";
+            return $"{_value} {(_isCelsius ? "C" : "F")}";
         }
 
         public static Temperature operator +(Temperature t1, Temperature t2)
         {
-            CoerceToCommonScale(t1, t2);
+            var t2Coerced = t2.CoerceTo(t1);
 
-            return new Temperature(t1.Value + t2.Value, t1.IsCelsius);
+            return new Temperature(t1.Value + t2Coerced.Value, t1.IsCelsius);
         }
 
         public static Temperature operator +(Temperature t1, int change)
@@ -120,9 +136,9 @@ namespace CourseApp
 
         public static Temperature operator -(Temperature t1, Temperature t2)
         {
-            CoerceToCommonScale(t1, t2);
+            var t2Coerced = t2.CoerceTo(t1);
 
-            return new Temperature(t1.Value - t2.Value, t1.IsCelsius);
+            return new Temperature(t1.Value - t2Coerced.Value, t1.IsCelsius);
         }
 
         public static Temperature operator -(Temperature t1, int change)

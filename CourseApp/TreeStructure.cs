@@ -8,43 +8,132 @@ namespace CourseApp
 {
     class TreeStructure
     {
-        private KeyValue[] items;
+        private TreeNode _root = new TreeNode(new KeyValue { Key = "0", Value = "root" });
+        private List<TreeNode> _nodes = new List<TreeNode>();
 
         public struct KeyValue
         {
-            public string key;
-            public string value;
+            public string Key;
+            public string Value;
 
             public KeyValue(string key, string value)
             {
-                this.key = key;
-                this.value = value;
+                Key = key;
+                Value = value;
             }
         }
 
         public void Initialize(KeyValue[] items)
-        {
-            this.items = items;
-        }
-        
-        public void Add(KeyValue item)
-        {
-            items = items.Concat(new KeyValue[] { item }).ToArray();
-        }
-
-        public KeyValue[] Find(string key)
-        {            
-            KeyValue[] foundItems = {};
+        {           
+            var nodes = new TreeNode[items.Length];
 
             foreach (var item in items)
             {
-                if (key.Contains(item.key))
-                {
-                    foundItems = foundItems.Concat(new KeyValue[] { item }).ToArray();
-                }    
+                _nodes.Add(new TreeNode(item));
             }
 
-            return foundItems;
-        }        
+            _nodes.ForEach(node => LinkChildParent(node));                        
+        }       
+
+        public void Add(KeyValue item)
+        {
+            var newNode = new TreeNode(item);
+            _nodes.Add(newNode);
+            LinkChildParent(newNode);
+
+            _nodes.ForEach(node => {
+                if (node.Entry.Key.Length > newNode.Entry.Key.Length)
+                {
+                    LinkChildParent(node);
+                }
+            });            
+        }
+
+        public List<TreeNode> Find(string key)
+        {
+            var path = new List<TreeNode>();
+
+            _nodes.ForEach(node => {
+                if (node.Entry.Key.Equals(key))
+                {                    
+                    var current = node;                    
+
+                    while (current != null)
+                    {
+                        path.Add(current);
+                        current = current.Parent;
+                    }
+                }
+            });
+
+            return path;
+        }
+
+        private void LinkChildParent(TreeNode node)
+        {
+            var currentParent = node.Parent;
+            var parent = FindParent(node);
+
+            if (parent != currentParent)
+            {
+                parent.AddChild(node);
+
+                if (currentParent != null)
+                {
+                    currentParent.Children.Remove(node);
+                }
+
+                node.Parent = parent;                
+            }            
+        }
+
+        private TreeNode FindParent(TreeNode node)
+        {
+            var key = node.Entry.Key;
+
+            if (key.Length == 1)
+            {                
+                return _root;
+            }
+            
+            var barrier = key.Length - 1;            
+
+            while (barrier != 0)
+            {
+                string possibleParentKey = key.Substring(0, barrier);                
+
+                foreach (var iterNode in _nodes)
+                {
+                    if (iterNode.Entry.Key.Equals(possibleParentKey))
+                    {
+                        return iterNode;
+                    }
+                }
+
+                barrier--;
+            }                     
+
+            return _root;
+        }       
+
+        public void print()
+        {            
+            Console.WriteLine($"{_root}");
+            var queue = _root.Children;
+
+            while (queue.Count != 0)
+            {
+                queue.ForEach(node => Console.Write($"{node} "));                
+
+                Console.WriteLine();
+
+                var clearBarrier = queue.Count;
+                var tempQueue = new List<TreeNode>();
+
+                queue.ForEach(node => tempQueue.AddRange(node.Children));                
+
+                queue = tempQueue;
+            }            
+        }
     }
 }

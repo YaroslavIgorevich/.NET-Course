@@ -13,7 +13,7 @@ namespace CourseApp
         {           
             foreach (var item in items)
             {
-                Console.Write(item.key + " ");
+                Console.Write(item.Key + " ");
             }
             Console.WriteLine();            
         }
@@ -22,23 +22,35 @@ namespace CourseApp
         {
             var simpleItems = new KeyValue[]
             {
-	            new KeyValue {key = "1", value = "One"},
-                new KeyValue {key = "2", value = "No way!"},
-                new KeyValue {key = "12", value = "Night"},
-                new KeyValue {key = "111", value = "To start"}
+	            new KeyValue {Key = "1", Value = "One"},
+                new KeyValue {Key = "2", Value = "No way!"},
+                new KeyValue {Key = "12", Value = "Night"},
+                new KeyValue {Key = "111", Value = "To start"}
             };
 
             var treeStructure = new TreeStructure();
-            treeStructure.Initialize(simpleItems);            
+            treeStructure.Initialize(simpleItems);
+            treeStructure.print();
 
-            PrintItems(treeStructure.Find("111"));
+            Console.WriteLine();
 
-            treeStructure.Add(new KeyValue { key = "11", value = "Day" });
+            treeStructure.Add(new KeyValue { Key = "11", Value = "New one" });
+            treeStructure.print();
 
-            PrintItems(treeStructure.Find("12"));
+            Console.WriteLine();
+
+            Console.WriteLine("Find 12: ");
+            treeStructure.Find("12")
+                .ForEach(node => Console.Write($"{node} "));
+
+            Console.WriteLine("\n");
+
+            Console.WriteLine("Find 111: ");
+            treeStructure.Find("111")
+                .ForEach(node => Console.Write($"{node} "));           
 
             var temp = new Temperature(10, isCelcius: true);
-            Console.WriteLine($"Initial temperature in C: {temp}");                        
+            Console.WriteLine($"Initial temperature in C: {temp}");
             Console.WriteLine($"Converted temperature to F: {Temperature.ConvertToF(temp)}");
             Console.WriteLine($"And now back to C: {Temperature.ConvertToC(temp)}");
 
@@ -61,7 +73,13 @@ namespace CourseApp
             Console.WriteLine($"t1 - 26 = {temp1 - 26}");
             Console.WriteLine($"t1 + 7.6 = {temp1 + 7.6}");
             Console.WriteLine($"t3 == t1? (Yes, they are): {temp3 == temp1}");
-            Console.WriteLine($"An average of t1, t2 and t3: {Temperature.GetAverage(daily)}");
+
+            Console.WriteLine();
+
+            Console.WriteLine("Enter a scale for average (C/F):");
+            string scale = Console.ReadLine();
+
+            Console.WriteLine($"An average of t1, t2 and t3: {Temperature.GetAverage(daily, scale)}");           
         }
     }
 }

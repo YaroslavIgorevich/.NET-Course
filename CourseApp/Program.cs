@@ -39,15 +39,22 @@ namespace CourseApp
 
             Console.WriteLine();
 
+            treeStructure.Add(new KeyValue { Key = "001", Value = "Lol" });
+            treeStructure.print();
+
+            Console.WriteLine();
+
             Console.WriteLine("Find 12: ");
-            treeStructure.Find("12")
+            treeStructure.FindOptimized("12")
                 .ForEach(node => Console.Write($"{node} "));
 
             Console.WriteLine("\n");
 
             Console.WriteLine("Find 111: ");
-            treeStructure.Find("111")
-                .ForEach(node => Console.Write($"{node} "));           
+            treeStructure.FindOptimized("111")
+                .ForEach(node => Console.Write($"{node} "));
+
+            Console.WriteLine("\n");
 
             var temp = new Temperature(10, isCelcius: true);
             Console.WriteLine($"Initial temperature in C: {temp}");

@@ -69,6 +69,47 @@ namespace CourseApp
             return path;
         }
 
+        public List<TreeNode> FindOptimized(string key)
+        {
+            var path = new List<TreeNode>();
+            SearchInChildren(_root.Children, key, path);
+
+            return path;
+        }
+
+        private void SearchInChildren(List<TreeNode> children, string key, List<TreeNode> path)
+        {
+            if (!children.Any()) { return; }
+
+            foreach (var iterNode in children)
+            {
+                if (iterNode.Entry.Key.Equals(key))
+                {
+                    path.Add(iterNode);
+                    return;
+                }
+            }
+
+            int barrier = 1;
+
+            while (barrier != key.Length)
+            {
+                var keyPrefix = key.Substring(0, barrier);
+
+                foreach (var iterNode in children)
+                {
+                    if (iterNode.Entry.Key.Equals(keyPrefix))
+                    {
+                        path.Add(iterNode);
+                        SearchInChildren(iterNode.Children, key, path);
+                        return;
+                    }
+                }
+
+                barrier++;
+            }            
+        }
+
         private void LinkChildParent(TreeNode node)
         {
             var currentParent = node.Parent;
